@@ -1,44 +1,40 @@
+// Importa as funções de autenticação do Firebase
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
-import { initializeApp } from "firebase/app";
 
-// Reutilize sua configuração do firebase.js se ela estiver no mesmo arquivo ou ajuste os imports.
-// O ideal é que essa inicialização esteja apenas em firebase.js e você apenas importe 'getAuth' aqui.
-// Se você seguiu o passo a passo, o código abaixo já deve funcionar.
-
+// Pega a instância de autenticação
 const auth = getAuth();
 
-// Redireciona se o usuário já estiver logado
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    // Usuário logado, redirecionar para a página principal
-    window.location.href = "app.html"; // Mude para o nome do seu arquivo principal
-  }
-});
-
-// Pega os elementos da página de login
+// Pega os elementos do HTML
 const emailInput = document.getElementById("email-login");
 const passwordInput = document.getElementById("password-login");
 const loginButton = document.getElementById("btn-login");
 
+// Verifica se o usuário já está logado e o redireciona
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // Substitua "app.html" pelo nome do seu arquivo principal
+    window.location.href = "app.html"; 
+  }
+});
+
+// Adiciona um evento de clique ao botão de login
 loginButton.addEventListener("click", () => {
     const email = emailInput.value;
     const password = passwordInput.value;
 
     signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-            // Login bem-sucedido
-            console.log("Login feito com sucesso!");
-            // O onAuthStateChanged acima já vai cuidar do redirecionamento
+            // Se o login for bem-sucedido, o onAuthStateChanged acima já vai redirecionar
+            console.log("Login realizado com sucesso!");
         })
         .catch((error) => {
-            // Erro no login
             const errorCode = error.code;
             const errorMessage = error.message;
 
             if (errorCode === 'auth/wrong-password') {
                 alert("Senha incorreta.");
             } else if (errorCode === 'auth/user-not-found') {
-                alert("Usuário não encontrado.");
+                alert("E-mail não encontrado.");
             } else {
                 alert("Erro ao fazer login: " + errorMessage);
             }
